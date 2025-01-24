@@ -1,0 +1,132 @@
+# Python Search Console Analyzer .gitignore
+
+# ----------------------------------------
+# Fichiers de configuration et credentials
+# ----------------------------------------
+config/credentials.json
+.env
+*.env
+.env.*
+!.env.example
+!config/credentials.json.example
+
+# ----------------------------------------
+# Fichiers Python
+# ----------------------------------------
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+sca-venv/
+.venv/
+.Python
+
+# ----------------------------------------
+# Fichiers de test et coverage
+# ----------------------------------------
+.coverage
+coverage.xml
+.pytest_cache/
+htmlcov/
+.tox/
+nosetests.xml
+
+# ----------------------------------------
+# Fichiers de logs et données temporaires
+# ----------------------------------------
+logs/*
+!logs/
+!logs/.gitkeep
+*.log
+temp/
+tmp/
+
+# ----------------------------------------
+# Fichiers de sortie et données
+# ----------------------------------------
+output/*
+!output/
+!output/.gitkeep
+*.xlsx
+*.csv
+*.json
+!requirements.json
+!package.json
+
+# ----------------------------------------
+# Fichiers système
+# ----------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# ----------------------------------------
+# Fichiers d'éditeur
+# ----------------------------------------
+# VSCode
+.vscode/
+*.code-workspace
+.history/
+
+# Eclipse
+.project
+.pydevproject
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+.idea_modules/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+.netrwhist
+
+# ----------------------------------------
+# Autres
+# ----------------------------------------
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Rope project settings
+.ropeproject
