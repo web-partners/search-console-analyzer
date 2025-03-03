@@ -12,11 +12,12 @@ import re
 def process_single_domain(domain: str, start_date: str, end_date: str, 
                          auth: SearchConsoleAuth, output_file: Optional[str] = None,
                          min_impressions: Optional[int] = None, 
-                         max_position: Optional[float] = None) -> bool:
+                         max_position: Optional[float] = None,
+                         country: Optional[str] = None) -> bool:
     try:
         # Collect data
         collector = SearchConsoleCollector(auth.service, domain)
-        raw_data = collector.fetch_data(start_date, end_date)
+        raw_data = collector.fetch_data(start_date, end_date, country)
         
         # Process data with filters
         df = DataProcessor.process_data(raw_data, min_impressions, max_position)
@@ -24,7 +25,12 @@ def process_single_domain(domain: str, start_date: str, end_date: str,
         # Generate Excel file
         if output_file is None:
             cleaned_domain = re.sub(r'^https?://', '', domain).rstrip('/').replace('/', '-').replace(':', '-')
-            output_file = f"output/search_console_data_{cleaned_domain}_{start_date}_{end_date}.xlsx"
+            country_suffix = f"_{country}" if country else ""
+            impressions_suffix = f"_min{min_impressions}" if min_impressions is not None else ""
+            # Remplacer les points par des tirets dans les valeurs décimales
+            position_value = str(max_position).replace('.', '-') if max_position is not None else None
+            position_suffix = f"_pos{position_value}" if position_value else ""
+            output_file = f"output/search_console_data_{cleaned_domain}{country_suffix}{impressions_suffix}{position_suffix}_{start_date}_{end_date}.xlsx"
             
         # Ensure output directory exists
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -42,7 +48,8 @@ def process_single_domain(domain: str, start_date: str, end_date: str,
 
 def main(domain: str, start_date: str, end_date: str, 
          credentials_path: str, output_file: Optional[str] = None,
-         min_impressions: Optional[int] = None, max_position: Optional[float] = None):
+         min_impressions: Optional[int] = None, max_position: Optional[float] = None,
+         country: Optional[str] = None):
     
     # Setup logging
     log_file = "logs/search_console_{time}.log"
@@ -74,10 +81,15 @@ def main(domain: str, start_date: str, end_date: str,
                 if output_file:
                     # If output file is specified, add domain name to it
                     base, ext = os.path.splitext(output_file)
-                    domain_output = f"{base}_{current_domain.replace('://', '_').replace('/', '_')}{ext}"
+                    country_suffix = f"_{country}" if country else ""
+                    impressions_suffix = f"_min{min_impressions}" if min_impressions is not None else ""
+                    # Remplacer les points par des tirets dans les valeurs décimales
+                    position_value = str(max_position).replace('.', '-') if max_position is not None else None
+                    position_suffix = f"_pos{position_value}" if position_value else ""
+                    domain_output = f"{base}_{current_domain.replace('://', '_').replace('/', '_')}{country_suffix}{impressions_suffix}{position_suffix}{ext}"
                 
                 if process_single_domain(current_domain, start_date, end_date, 
-                                      auth, domain_output, min_impressions, max_position):
+                                      auth, domain_output, min_impressions, max_position, country):
                     successful += 1
                 else:
                     failed += 1
@@ -94,7 +106,7 @@ def main(domain: str, start_date: str, end_date: str,
                 raise Exception(f"No access to domain: {domain}. Allowed domains: {', '.join(allowed_domains)}")
             
             if not process_single_domain(domain, start_date, end_date, 
-                                      auth, output_file, min_impressions, max_position):
+                                      auth, output_file, min_impressions, max_position, country):
                 raise Exception(f"Failed to process domain: {domain}")
         
         return log_file
@@ -112,8 +124,10 @@ if __name__ == "__main__":
     parser.add_argument("--output", help="Output filename (optional)")
     parser.add_argument("--min-impressions", type=int, help="Minimum number of impressions to include")
     parser.add_argument("--max-position", type=float, help="Maximum position to include (e.g., 10.0 for first page)")
+    parser.add_argument("--country", help="Filter results by country code (e.g., fra, usa, deu)")
     
     args = parser.parse_args()
     main(args.domain, args.start_date, args.end_date, 
          args.credentials_path, args.output,
-         args.min_impressions, args.max_position)
+         args.min_impressions, args.max_position,
+         args.country)

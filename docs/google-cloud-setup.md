@@ -72,5 +72,24 @@ Pour vérifier que tout fonctionne :
 2. Exécutez le script avec les paramètres de base
 3. Si vous obtenez des erreurs d'authentification :
    - Vérifiez que l'API est bien activée
-   - Confirmez que le compte de service a accès à la Search Console
+   - Confirmez que le compte de service a bien accès à votre propriété Search Console
    - Validez le format de l'URL de votre site
+
+## Notes sur le filtrage par pays
+
+Si vous utilisez l'option de filtrage par pays (`--country`), assurez-vous d'utiliser les codes pays ISO à trois lettres ([ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)) :
+
+- `fra` : France
+- `usa` : États-Unis
+- `deu` : Allemagne
+- `gbr` : Royaume-Uni
+- `esp` : Espagne
+- `ita` : Italie
+- etc.
+
+Exemple d'utilisation :
+```bash
+python src/main.py https://votredomaine.com 2024-01-01 2024-01-31 credentials.json --country fra
+```
+
+Cette option permet de filtrer les résultats pour n'afficher que les données provenant du pays spécifié.

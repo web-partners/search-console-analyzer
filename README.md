@@ -19,6 +19,8 @@ Un outil Python pour collecter, analyser et exporter les données de Google Sear
 - 🌐 **NOUVEAU** : Export multi-domaines avec la commande `all`
 - 📁 **NOUVEAU** : Gestion automatique des dossiers de sortie
 - 📈 **NOUVEAU** : Correction du calcul du CTR pour éviter les divisions par zéro
+- 🌍 **NOUVEAU** : Filtrage des résultats par pays
+- 📋 **NOUVEAU** : Inclusion des filtres dans le nom des fichiers d'export
 
 ## 🔧 Prérequis
 
@@ -69,6 +71,7 @@ Arguments optionnels :
 - `--output` : Nom du fichier Excel de sortie
 - `--min-impressions` : Nombre minimum d'impressions pour inclure une page (ex: 100)
 - `--max-position` : Position maximale à inclure (ex: 10.0 pour la première page)
+- `--country` : [Code pays à trois lettres](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) pour filtrer les résultats (ex: fra, usa, deu)
 
 Exemples d'utilisation :
 
@@ -79,6 +82,10 @@ python path/to/src/main.py https://votredomaine.com/ 2024-01-01 2024-01-31 path/
 # Avec filtres
 python path/to/src/main.py https://votredomaine.com/ 2024-01-01 2024-01-31 path/to/config/credentials.json --min-impressions 100 --max-position 10.0
 
+# Avec filtre par pays
+python path/to/src/main.py https://votredomaine.com/ 2024-01-01 2024-01-31 path/to/config/credentials.json --country fra
+
+
 # Avec nom de fichier personnalisé
 python path/to/src/main.py https://votredomaine.com/ 2024-01-01 2024-01-31 path/to/config/credentials.json --output path/to/whatever.xlsx
 
@@ -87,21 +94,25 @@ python path/to/src/main.py all 2024-01-01 2024-01-31 path/to/config/credentials.
 
 # Export multi-domaines avec nom de fichier personnalisé
 python path/to/src/main.py all 2024-01-01 2024-01-31 path/to/config/credentials.json --output path/to/rapports/analyse.xlsx
+
+# Export multi-domaines avec filtre par pays
+python path/to/src/main.py all 2024-01-01 2024-01-31 path/to/config/credentials.json --country fra
 ```
 
 Points importants à vérifier :
 
 1. Forme du SITE_URL :
-- Pour des propriétés de type « domaine », utilisez la syntaxe "sc-domain:example.com".
-- Pour des propriétés de type « URL », utilisez l’URL de base (ex. "https://www.example.com/").
-- Vérifiez la façon dont votre propriété est déclarée dans la Search Console.
+- Pour des propriétés de type « domaine », utilisez la syntaxe "sc-domain:example.com"
+- Pour des propriétés de type « URL », utilisez l'URL de base (ex. "https://www.example.com/")
+- Vérifiez la façon dont votre propriété est déclarée dans la Search Console
 
 2. Périmètre des dates :
-- L’API Search Console retourne des données sur une période glissante (max ~16 mois). Assurez-vous de demander une plage de dates disponible dans la Search Console.
+- L'API Search Console retourne des données sur une période glissante (max ~16 mois)
+- Assurez-vous de demander une plage de dates disponible dans la Search Console
 
 3. Authentification :
 - Suivez le [guide de configuration des identifiants](docs/google-cloud-setup.md)
-- Vérifiez que le compte de service a bien accès à votre propriété Search Console. Vous devez partager l’accès à votre propriété Search Console au compte de service (l’adresse e-mail affichée dans votre fichier JSON) dans l’interface Search Console.
+- Vérifiez que le compte de service a bien accès à votre propriété Search Console. Vous devez partager l'accès à votre propriété Search Console au compte de service (l'adresse e-mail affichée dans votre fichier JSON) dans l'interface Search Console.
 
 ## 📁 Structure du Projet
 
@@ -109,13 +120,15 @@ Points importants à vérifier :
 search-console-analyzer/
 ├── src/
 │   ├── __init__.py
-│   ├── main.py             # Point d'entrée
-│   ├── auth.py             # Authentification Google
-│   ├── data_collector.py   # Collecte des données
-│   ├── data_processor.py   # Traitement des données
-│   └── excel_generator.py  # Génération des rapports
-├── logs/                   # Fichiers de logs
-├── requirements.txt        # Dépendances
+│   ├── main.py           # Point d'entrée
+│   ├── auth.py          # Authentification Google
+│   ├── data_collector.py # Collecte des données
+│   ├── data_processor.py # Traitement des données
+│   └── excel_generator.py # Génération des rapports
+├── config/              # Configuration et credentials
+├── docs/               # Documentation détaillée
+├── logs/               # Fichiers de logs
+├── requirements.txt     # Dépendances
 └── README.md
 ```
 
@@ -157,4 +170,5 @@ Pour toute question ou suggestion, n'hésitez pas à :
 - M'envoyer un email à search-console-analyzer@webpartners.agency
 
 ---
+Dernière mise à jour : Janvier 2025
 Développé avec ❤️ par Web Partners

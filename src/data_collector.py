@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 import time
 from datetime import datetime
 from loguru import logger
@@ -10,6 +10,7 @@ class SearchConsoleCollector:
         self.domain = domain
         
     def fetch_data(self, start_date: str, end_date: str, 
+                   country: Optional[str] = None,
                    batch_size: int = 1000, max_retries: int = 3) -> List[Dict]:
         all_data = []
         start_row = 0
@@ -24,6 +25,16 @@ class SearchConsoleCollector:
                     'startRow': start_row,
                     'dataState': 'all'
                 }
+                
+                # Ajouter le filtre par pays si spécifié
+                if country:
+                    request['dimensionFilterGroups'] = [{
+                        'filters': [{
+                            'dimension': 'country',
+                            'expression': country
+                        }]
+                    }]
+                    logger.info(f"Filtering results for country: {country}")
                 
                 response = self._execute_request(request, max_retries)
                 if not response.get('rows'):
